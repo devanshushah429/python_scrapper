@@ -1,1 +1,97 @@
+# JSON files
 *.json
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Cython debug symbols
+cython_debug/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+egg-info/
+pip-log.txt
+pip-delete-this-directory.txt
+*.egg
+*.egg-info
+*.dist-info
+*.nib
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environment
+venv/
+ENV/
+env/
+venv.bak/
+venv/
+.env/
+.venv/
+
+# Test and coverage reports
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+*.gcov
+*.tav
+*.tox
+*.nox
+*.hypothesis
+*.pytest_cache/
+.coverage
+*.coverage
+*.coverage.*
+.cache
+*.cabal
+*.stack-work
+*.pytest_cache/
+cover/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+*.kate-swp
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# Miscellaneous
+*.DS_Store
+*.local
+*.tmp
+*.bak
+*.orig
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# MySQL
+*.sql
+*.sqlite3
+*.db
+
+# PyCharm
+.idea/
+
+# Pyre type checker
+.pyre/
