@@ -92,3 +92,11 @@ class XPathExtractor:
         except Exception as e:
             logging.error(f"Error in get_xpath_inner_text_from_element: {e}")
             return None
+        
+    def get_elements_using_xpath(self, xpath):
+        try:
+            elements = self.tree.xpath(xpath)
+        except Exception as e:
+            elements  = None
+            print("Exception occurred")
+        return elements
