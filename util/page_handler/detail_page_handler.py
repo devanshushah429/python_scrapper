@@ -1,7 +1,7 @@
 from util.lxml_handler.xpath_extractor import XPathExtractor
-from util.requests_handler.web_page_fetcher import WebPageFetcher
+from util.requests_handler.requests_services import RequestsServices
 from util.lxml_handler.html_parser import HTMLParser
-from util.selenium_handler.selenium_web_page_scrapper import SeleniumWebPageScrapper
+from util.selenium_handler.selenium_services import SeleniumServices
 from selenium.webdriver.support.ui import WebDriverWait
 
 class DetailPageHandler:
@@ -12,7 +12,7 @@ class DetailPageHandler:
     def scrape_details_page_using_requests(self):
         """This function uses requests to get the page source. And then get the details accordingly with xpaths."""
         try:
-            self.page_source = WebPageFetcher(self.url).get_page_source_by_url_using_requests()
+            self.page_source = RequestsServices(self.url).get_page_source_by_url_using_requests()
             if self.page_source is None:
                 return {}
             return self.scrape_page_details()
@@ -20,19 +20,19 @@ class DetailPageHandler:
             print(f"Error in scrape_details_page: {e}")
             return {}
 
-    def scrape_details_page_using_selenium_chromedriver(self,selenium_web_page_scraper:SeleniumWebPageScrapper):
+    def scrape_details_page_using_selenium_chromedriver(self,selenium_services:SeleniumServices):
         """"This function uses selenium to get the page source. And then get the details accordingly with xpaths."""
         try:
-            selenium_web_page_scraper.load_url(self.url)
-            WebDriverWait(selenium_web_page_scraper.driver, 10).until(lambda d: d.execute_script('return document.readyState') == 'complete')
-            self.page_source = selenium_web_page_scraper.get_page_source()
+            selenium_services.load_url(self.url)
+            WebDriverWait(selenium_services.driver, 10).until(lambda d: d.execute_script('return document.readyState') == 'complete')
+            self.page_source = selenium_services.get_page_source()
             if self.page_source is None:
                 return {}
             return self.scrape_page_details()
         except Exception as e:
             print(f"Error in scrape_details_page: {e}")
             return {}
-
+        
     def scrape_page_details(self):
         try:
             tree = HTMLParser(self.page_source).parse()

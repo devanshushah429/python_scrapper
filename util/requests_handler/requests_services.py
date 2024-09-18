@@ -1,5 +1,5 @@
 import requests
-class WebPageFetcher:
+class RequestsServices:
     def __init__(self, url):
         self.url = url
     

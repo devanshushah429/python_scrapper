@@ -1,7 +1,7 @@
 from util.lxml_handler.xpath_extractor import XPathExtractor
-from util.requests_handler.web_page_fetcher import WebPageFetcher
+from util.requests_handler.requests_services import RequestsServices
 from util.lxml_handler.html_parser import HTMLParser
-from util.selenium_handler.selenium_web_page_scrapper import SeleniumWebPageScrapper
+from util.selenium_handler.selenium_services import SeleniumServices
 
 class ListingPageHandler:
     def __init__(self, page_url, xpaths):
@@ -10,17 +10,17 @@ class ListingPageHandler:
 
     def fetch_block_data_requests(self):
         try:
-            self.tree = HTMLParser(WebPageFetcher(self.page_url).get_page_source_by_url_using_requests()).parse()
+            self.tree = HTMLParser(RequestsServices(self.page_url).get_page_source_by_url_using_requests()).parse()
             next_page_url, blocks_data = self.fetch_block_data()
             return (next_page_url, blocks_data)
         except Exception as e:
             print(f"Error in fetch_block_data: {e}")
             return ()
 
-    def fetch_block_data_selenium_chrome_driver(self, selenium_web_page_scraper:SeleniumWebPageScrapper):
+    def fetch_block_data_selenium_chrome_driver(self, selenium_services:SeleniumServices):
         try:
-            selenium_web_page_scraper.load_url(self.page_url)
-            self.tree = HTMLParser(selenium_web_page_scraper.get_page_source()).parse()
+            selenium_services.load_url(self.page_url)
+            self.tree = HTMLParser(selenium_services.get_page_source()).parse()
             next_page_url, blocks_data = self.fetch_block_data()
             return next_page_url, blocks_data
         except Exception as e:
