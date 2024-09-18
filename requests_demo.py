@@ -2,45 +2,9 @@ from datetime import datetime
 from datetime import datetime
 import logging
 import json
-from util.lxml_handler.html_parser import HTMLParser
-from util.lxml_handler.xpath_extractor import XPathExtractor
-from util.requests_handler.web_page_fetcher import WebPageFetcher
 from database.mongo_db_handler import MongoDBHandler
-from util.page_handler.requests.detail_page_handler import DetailPageHandler
-
-def fetch_block_data(page_url, xpaths):
-    try:
-        tree = HTMLParser(WebPageFetcher(page_url).get_page_source_by_url_using_requests()).parse()
-        block_xpath = xpaths["block_xpath"]
-        xpath_extractor = XPathExtractor(tree)
-        elements = xpath_extractor.get_elements_using_xpath(block_xpath)
-        try:
-            next_page_url = xpath_extractor.get_xpath_attribute(xpaths["next_button_xpath"], "href")
-        except:
-            next_page_url = None
-        blocks_data = []
-        for element in elements:
-            try:
-                block_details = {"page_url": page_url}
-
-                for key, value in xpaths["block_details"]["inner_text_xpath_dictionary"].items():
-                    block_details[key] = xpath_extractor.get_xpath_inner_text_from_element(element, value)
-
-                for key, value in xpaths["block_details"]["attribute_dictionary"].items():
-                    if key == "url":
-                        block_details[key] = xpaths["base_url"] + xpath_extractor.get_xpath_attribute_from_element(element, value[0], value[1])
-                    else:
-                        block_details[key] = xpath_extractor.get_xpath_attribute_from_element(element, value[0], value[1])
-
-                blocks_data.append(block_details)
-            except Exception as e:
-                logging.error(f"Error processing block data: {e}")
-                continue
-            
-        return (next_page_url, blocks_data)
-    except Exception as e:
-        logging.error(f"Error in fetch_block_data: {e}")
-        return ()
+from util.page_handler.detail_page_handler import DetailPageHandler
+from util.page_handler.listing_page_handler import ListingPageHandler
 
 def process_page(page_url, xpaths):
     """
@@ -48,12 +12,13 @@ def process_page(page_url, xpaths):
     """
     try:
         mongo_db_handler = MongoDBHandler(xpaths["connection_string"], xpaths["database_name"], xpaths["collection_name"])
-        next_page_url, blocks_data = fetch_block_data(page_url, xpaths)
-        all_data = []
+        listing_page_handler = ListingPageHandler(page_url, xpaths)
+        next_page_url, blocks_data = listing_page_handler.fetch_block_data_requests()
+        all_data = []   
 
         for block_data in blocks_data:
             details_page_handler = DetailPageHandler(block_data.get("url"), xpaths)
-            details_page_data = details_page_handler.scrape_details_page()
+            details_page_data = details_page_handler.scrape_details_page_using_requests()
             logging.info(f"Processing block data: {block_data}")
             data = {
                 "time_stamp": datetime.now(),
